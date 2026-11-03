@@ -28,6 +28,9 @@ import androidx.compose.ui.unit.dp
 import tw.edu.pu.csim.s1142393.basicui.ui.theme.BasicUiTheme
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.platform.LocalContext
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -162,6 +165,7 @@ data class Animal(
 
 @Composable
 fun LazyRowExample(modifier: Modifier = Modifier) {
+    val context = LocalContext.current
     val animals = listOf(
         Animal("鴨子", R.drawable.animal0),
         Animal("企鵝", R.drawable.animal1),
@@ -197,7 +201,15 @@ fun LazyRowExample(modifier: Modifier = Modifier) {
                     Image(
                         painter = painterResource(id = animal.imageRes),
                         contentDescription = animal.name,
-                        modifier = Modifier.size(150.dp)
+                        modifier = Modifier
+                            .size(150.dp)
+                            .clickable {
+                                Toast.makeText(
+                                    context,
+                                    "這是 ${animal.name}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
