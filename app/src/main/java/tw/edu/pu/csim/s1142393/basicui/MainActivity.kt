@@ -31,7 +31,6 @@ import androidx.compose.material3.CardDefaults
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.platform.LocalContext
-import android.view.ViewGroup
 import androidx.annotation.RawRes
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.remember
@@ -40,6 +39,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import android.net.Uri
+import androidx.core.net.toUri
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -238,9 +238,8 @@ fun SimpleVideoPlayer(@RawRes videoRes: Int) {
     val context = LocalContext.current
 
     val exoPlayer = remember(videoRes) {
-        val uri = Uri.parse(
-            "android.resource://${context.packageName}/$videoRes"
-        )
+        val uri = "android.resource://${context.packageName}/$videoRes".toUri()
+
 
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(uri))
