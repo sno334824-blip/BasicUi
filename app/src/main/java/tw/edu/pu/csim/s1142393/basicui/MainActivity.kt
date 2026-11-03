@@ -40,6 +40,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import android.net.Uri
 import androidx.core.net.toUri
+import androidx.compose.material3.Button
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,13 +62,27 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Main(modifier: Modifier = Modifier) {
+    var currentVideo by remember { mutableStateOf(R.raw.love) }
     Box {
         LazyColumnExample(modifier)
         ColumnExample(modifier)
         TextFieldExample(modifier)
 
         Column {
-            SimpleVideoPlayer(videoRes = R.raw.love)
+            SimpleVideoPlayer(videoRes = currentVideo)
+
+            Button(
+                onClick = {
+                    currentVideo = if (currentVideo == R.raw.love) {
+                        R.raw.handpan
+                    } else {
+                        R.raw.love
+                    }
+                }
+            ) {
+                Text("切換影片")
+            }
+
             LazyRowExample(modifier)
         }
     }
