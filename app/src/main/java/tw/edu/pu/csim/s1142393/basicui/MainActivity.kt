@@ -31,6 +31,15 @@ import androidx.compose.material3.CardDefaults
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.platform.LocalContext
+import android.view.ViewGroup
+import androidx.annotation.RawRes
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
+import android.net.Uri
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +65,11 @@ fun Main(modifier: Modifier = Modifier) {
         LazyColumnExample(modifier)
         ColumnExample(modifier)
         TextFieldExample(modifier)
-        LazyRowExample(modifier)
+
+        Column {
+            SimpleVideoPlayer(videoRes = R.raw.love)
+            LazyRowExample(modifier)
+        }
     }
 }
 
@@ -219,4 +232,37 @@ fun LazyRowExample(modifier: Modifier = Modifier) {
             }
         }
     }
+}
+@Composable
+fun SimpleVideoPlayer(@RawRes videoRes: Int) {
+    val context = LocalContext.current
+
+    val exoPlayer = remember(videoRes) {
+        val uri = Uri.parse(
+            "android.resource://${context.packageName}/$videoRes"
+        )
+
+        ExoPlayer.Builder(context).build().apply {
+            setMediaItem(MediaItem.fromUri(uri))
+            prepare()
+            playWhenReady = true
+        }
+    }
+
+    DisposableEffect(exoPlayer) {
+        onDispose {
+            exoPlayer.release()
+        }
+    }
+
+    AndroidView(
+        factory = { ctx ->
+            PlayerView(ctx).apply {
+                player = exoPlayer
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(200.dp)
+    )
 }
